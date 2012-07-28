@@ -1,0 +1,23 @@
+[hub]
+  protocol = https
+[user]
+	name  = cheetah
+	email = thcheetah@gmail.com
+[credential]
+  helper = osxkeychain
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  ui = true
+[core]
+  excludesfile = ~/.gitignore
+  editor = slime
+[apply]
+  whitespace = nowarn
+[mergetool]
+  keepBackup = false
+[difftool]
+  prompt = false
+[help]
+  autocorrect = 1
