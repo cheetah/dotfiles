@@ -11,7 +11,7 @@ Pry.config.commands.import(Pry::CommandSet.new do
         load($wl__reload_file)
         next
       end
-      
+
       files = Dir['*.rb']
       case files.size
       when 0
@@ -25,7 +25,7 @@ Pry.config.commands.import(Pry::CommandSet.new do
         next
       end
     end
-    
+
     file = file.sub(/(\.rb)?$/, '.rb')
     $wl__reload_file = file
     load(file)
