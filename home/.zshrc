@@ -5,4 +5,6 @@ plugins=(osx brew git github redis-cli ruby rbenv gem bundler zsh-syntax-highlig
 
 source $ZSH/oh-my-zsh.sh
 
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin:$PATH
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
