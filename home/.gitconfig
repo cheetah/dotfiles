@@ -1,8 +1,8 @@
 [hub]
   protocol = https
 [user]
-	name  = cheetah
-	email = thcheetah@gmail.com
+	name  = Anton Zadvorny
+	email = az@wheely.com
 [credential]
   helper = osxkeychain
 [color]
