@@ -1,5 +1,5 @@
 Pry.config.pager  = false
-Pry.config.editor = 'slime'
+Pry.config.editor = 'vim'
 Pry.config.prompt = [proc{'? '}, proc{'| '}]
 
 Pry.config.commands.import(Pry::CommandSet.new do
