@@ -1,0 +1,243 @@
+#!/usr/bin/env ruby
+
+require 'pp'
+require 'docopt'
+require 'pathname'
+require 'fileutils'
+
+VERSION = '0.0.1'
+
+module ShellHelpers
+  extend self
+
+  COLOR_CODES = {
+    black:   0, light_black:   60,
+    red:     1, light_red:     61,
+    green:   2, light_green:   62,
+    yellow:  3, light_yellow:  63,
+    blue:    4, light_blue:    64,
+    magenta: 5, light_magenta: 65,
+    cyan:    6, light_cyan:    66,
+    white:   7, light_white:   67,
+    default: 9
+  }.freeze
+
+  def colorify_string(str, color = :default)
+    "\033[0;#{COLOR_CODES[color] + 30}m#{str}\033[0m"
+  end
+
+  def say(message, color = :default)
+    $stdout.print(colorify_string(message, color))
+    $stdout.flush
+  end
+
+  def say_status(status, message, color = :default)
+    buffer = "#{colorify_string(status, color)} #{message}"
+    buffer << "\n" unless buffer.end_with?("\n")
+
+    $stdout.print(buffer)
+    $stdout.flush
+  end
+
+  def ask_simply(statement, color = :default)
+    say("#{statement} ", color)
+
+    $stdin.gets.tap { |text| text.strip! if text }
+  end
+
+  def ask_filtered(statement, answer_set, color = :default)
+    correct_answer = nil
+    until correct_answer
+      answer = ask_simply("#{statement} [#{answer_set.join}]", color)
+      correct_answer = answer_set.include?(answer) ? answer : nil
+
+      answers = answer_set.join
+      say("Your response must be one of: [#{answers}]. Please try again.") unless correct_answer
+    end
+
+    correct_answer
+  end
+
+  def ask(statement, *args)
+    options = args.last.is_a?(Hash) ? args.pop : {}
+    color = args.first
+
+    if options[:limited_to]
+      ask_filtered(statement, options[:limited_to], color)
+    else
+      ask_simply(statement, color)
+    end
+  end
+
+  def collision_accepted?(destination)
+    answer = ask("Overwrite #{destination}?", :default, limited_to: %w(y n a))
+
+    case answer
+    when 'y'
+      return true
+    when 'n'
+      return false
+    when 'a'
+      say 'Aborting...'
+      fail SystemExit
+    end
+  end
+end
+
+module FileHelpers
+  extend self
+
+  def inside(dir, &block)
+    dir = Pathname.new(dir).expand_path
+
+    FileUtils.mkdir_p(dir) unless File.exist?(dir)
+    FileUtils.cd(dir) { block.arity == 1 ? yield(dir) : yield }
+  end
+
+  def descendant?(a, b)
+    a_list = Pathname.new(a).expand_path.to_s.split('/')
+    b_list = Pathname.new(b).expand_path.to_s.split('/')
+
+    b_list[0..a_list.size - 1] == a_list
+  end
+
+  def rm_link(target)
+    target = Pathname.new(target)
+
+    if target.symlink?
+      say_status(:unlink, "#{target.expand_path}", :green)
+      FileUtils.rm_rf(target)
+    else
+      say_status(:conflict, "#{target} is not a symlink", :red)
+    end
+  end
+
+  def ln_s(source, destination, options = {})
+    source = Pathname.new(source)
+    destination = Pathname.new(destination)
+
+    FileUtils.mkdir_p(destination.dirname)
+
+    if destination.symlink? && destination.readlink == source
+      say_status(:identical, destination.expand_path, :blue)
+    elsif destination.symlink?
+      say_status(:conflict, "#{destination} exists and points to #{destination.readlink}", :red)
+
+      FileUtils.rm(destination)
+      FileUtils.ln_s(source, destination, force: true)
+    elsif destination.exist?
+      say_status(:conflict, "#{destination} exists", :red)
+
+      if collision_accepted?(destination)
+        FileUtils.rm_r(destination, force: true)
+        FileUtils.ln_s(source, destination, force: true)
+      end
+    else
+      say_status(:symlink, "#{source.expand_path} to #{destination.expand_path}", :green)
+
+      FileUtils.ln_s(source, destination)
+    end
+  end
+end
+
+module GitHelpers
+  extend self
+
+  def git_pull
+    say_status(:git, "Pulling #{`git config --get remote.origin.url`}", :green)
+    system 'git pull'
+  end
+end
+
+class Linker
+  include GitHelpers
+  include FileHelpers
+  include ShellHelpers
+
+  LINKDIR_FILENAME = '.linkdir'.freeze
+
+  def git_dir
+    @git_dir ||= Pathname.new(File.dirname(__FILE__)).realpath
+  end
+
+  def home_dir
+    @home_dir ||= Pathname.new(ENV['HOME'] || '~').realpath
+  end
+
+  def repo_dir
+    @repo_dir ||= Pathname.new(File.dirname(__FILE__)).join('home').realpath
+  end
+
+  def update
+    inside(git_dir) { git_pull }
+  end
+
+  def each_file
+    skip_dirs = []
+
+    inside(repo_dir) do
+      Pathname.glob('**/*', File::FNM_DOTMATCH).reject do |file|
+        ['.', '..', LINKDIR_FILENAME].include?(file.basename.to_s)
+      end.each do |path|
+        if path.directory? && path.join(LINKDIR_FILENAME).exist?
+          skip_dirs << path
+        elsif path.directory? || skip_dirs.any? { |dir| descendant?(dir, path) }
+          next
+        end
+
+        yield(path.expand_path, home_dir.join(path))
+      end
+    end
+  end
+
+  def list_all
+    each_file do |absolute_path, home_path|
+      say_status(absolute_path.file? ? :file : :directory, home_path, :blue)
+    end
+  end
+
+  def symlink_all
+    each_file do |absolute_path, home_path|
+      ln_s(absolute_path, home_path)
+    end
+  end
+
+  def unsymlink_all
+    each_file do |_, home_path|
+      rm_link(home_path)
+    end
+  end
+end
+
+doc = <<DOCOPT
+dotfiles linker
+
+Usage:
+  linker list
+  linker update
+  linker symlink
+  linker unsymlink
+  linker -h | --help
+  linker --version
+
+ Options:
+   -h, --help            Show this message.
+   --version             Print the version.
+DOCOPT
+
+begin
+  linker = Linker.new
+  docopt = Docopt.docopt(doc, version: VERSION)
+
+  if docopt['symlink']
+    linker.symlink_all
+  elsif docopt['unsymlink']
+    linker.unsymlink_all
+  elsif docopt['update']
+    linker.update
+  elsif docopt['list']
+    linker.list_all
+  end
+rescue Docopt::Exit => e
+  puts e.message
+end
