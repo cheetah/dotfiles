@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 
-require 'pp'
-require 'docopt'
+#/ Usage: dotlinker <command>
+#/
+#/   list          List files to link
+#/   update        Update dotfiles repo
+#/   symlink       Symlink all files
+#/   unsymlink     Unsymlink all files
+
 require 'pathname'
 require 'fileutils'
-
-VERSION = '0.0.1'
 
 module ShellHelpers
   extend self
@@ -24,6 +27,10 @@ module ShellHelpers
 
   def colorify_string(str, color = :default)
     "\033[0;#{COLOR_CODES[color] + 30}m#{str}\033[0m"
+  end
+
+  def say_help
+    exec "grep ^#/<'#{__FILE__}'|cut -c4-"
   end
 
   def say(message, color = :default)
@@ -154,6 +161,7 @@ class Linker
   include FileHelpers
   include ShellHelpers
 
+  VERSION = '0.1.0'.freeze
   LINKDIR_FILENAME = '.linkdir'.freeze
 
   def git_dir
@@ -209,35 +217,24 @@ class Linker
   end
 end
 
-doc = <<DOCOPT
-dotfiles linker
+COMMANDS = ['list', 'update', 'symlink', 'unsymlink'].freeze
 
-Usage:
-  linker list
-  linker update
-  linker symlink
-  linker unsymlink
-  linker -h | --help
-  linker --version
-
- Options:
-   -h, --help            Show this message.
-   --version             Print the version.
-DOCOPT
-
-begin
+command = ARGV.pop
+if command.nil? || !COMMANDS.include?(command)
+  ShellHelpers.say_help
+else
   linker = Linker.new
-  docopt = Docopt.docopt(doc, version: VERSION)
 
-  if docopt['symlink']
-    linker.symlink_all
-  elsif docopt['unsymlink']
-    linker.unsymlink_all
-  elsif docopt['update']
-    linker.update
-  elsif docopt['list']
+  case command
+  when 'list'
     linker.list_all
+  when 'update'
+    linker.update
+  when 'symlink'
+    linker.symlink_all
+  when 'unsymlink'
+    linker.unsymlink_all
+  else
+    ShellHelpers.say_help
   end
-rescue Docopt::Exit => e
-  puts e.message
 end
