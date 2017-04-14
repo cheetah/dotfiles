@@ -1,7 +1,7 @@
 ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="cheetah"
 
-plugins=(osx brew git github redis-cli ruby rbenv gem bundler zsh-syntax-highlighting sublime)
+plugins=(osx brew git github redis-cli ruby rbenv gem bundler sublime zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 

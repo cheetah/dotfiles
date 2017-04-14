@@ -2,7 +2,7 @@
   protocol = https
 [user]
 	name  = Anton Zadvorny
-	email = az@wheely.com
+	email = thcheetah@gmail.com
 [credential]
   helper = osxkeychain
 [color]
