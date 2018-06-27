@@ -1,12 +1,6 @@
 #!/usr/bin/env ruby
 
-#/ Usage: dotlinker <command>
-#/
-#/   list          List files to link
-#/   update        Update dotfiles repo
-#/   symlink       Symlink all files
-#/   unsymlink     Unsymlink all files
-
+require 'optparse'
 require 'pathname'
 require 'fileutils'
 
@@ -27,10 +21,6 @@ module ShellHelpers
 
   def colorify_string(str, color = :default)
     "\033[0;#{COLOR_CODES[color] + 30}m#{str}\033[0m"
-  end
-
-  def say_help
-    exec "grep ^#/<'#{__FILE__}'|cut -c4-"
   end
 
   def say(message, color = :default)
@@ -135,7 +125,7 @@ module FileHelpers
     elsif destination.exist?
       say_status(:conflict, "#{destination} exists", :red)
 
-      if collision_accepted?(destination)
+      if options[:force] || collision_accepted?(destination)
         FileUtils.rm_r(destination, force: true)
         FileUtils.ln_s(source, destination, force: true)
       end
@@ -147,25 +137,17 @@ module FileHelpers
   end
 end
 
-module GitHelpers
-  extend self
-
-  def git_pull
-    say_status(:git, "Pulling #{`git config --get remote.origin.url`}", :green)
-    system 'git pull'
-  end
-end
-
 class Linker
-  include GitHelpers
   include FileHelpers
   include ShellHelpers
 
-  VERSION = '0.1.0'.freeze
+  VERSION = '0.2.1'.freeze
   LINKDIR_FILENAME = '.linkdir'.freeze
 
-  def git_dir
-    @git_dir ||= Pathname.new(File.dirname(__FILE__)).realpath
+  attr_reader :options
+
+  def initialize(options = {})
+    @options = options
   end
 
   def home_dir
@@ -174,10 +156,6 @@ class Linker
 
   def repo_dir
     @repo_dir ||= Pathname.new(File.dirname(__FILE__)).join('home').realpath
-  end
-
-  def update
-    inside(git_dir) { git_pull }
   end
 
   def each_file
@@ -206,7 +184,7 @@ class Linker
 
   def symlink_all
     each_file do |absolute_path, home_path|
-      ln_s(absolute_path, home_path)
+      ln_s(absolute_path, home_path, options)
     end
   end
 
@@ -217,24 +195,37 @@ class Linker
   end
 end
 
-COMMANDS = ['list', 'update', 'symlink', 'unsymlink'].freeze
+COMMANDS = ['list', 'update', 'link', 'unlink'].freeze
 
+options = {}
+opt_parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{__FILE__} <command> [options]"
+
+  opts.separator ''
+  opts.separator 'Commands:'
+  opts.separator 'list       List files to link'
+  opts.separator 'link       Symlink all files'
+  opts.separator 'unlink     Unsymlink all files'
+
+  opts.separator ''
+  opts.separator 'Options:'
+  opts.on('-f', '--force', 'Force overwrite all files') { |force| options[:force] = force }
+  opts.on('-v', '--version', 'Show version information') { |_| ShellHelpers.say(Linker::VERSION); exit(0) }
+end
+
+opt_parser.parse!
 command = ARGV.pop
 if command.nil? || !COMMANDS.include?(command)
-  ShellHelpers.say_help
+  ShellHelpers.say(opt_parser.help)
 else
-  linker = Linker.new
+  linker = Linker.new(options)
 
   case command
   when 'list'
     linker.list_all
-  when 'update'
-    linker.update
-  when 'symlink'
+  when 'link'
     linker.symlink_all
-  when 'unsymlink'
+  when 'unlink'
     linker.unsymlink_all
-  else
-    ShellHelpers.say_help
   end
 end
