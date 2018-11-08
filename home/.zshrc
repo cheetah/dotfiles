@@ -15,11 +15,12 @@ if zplug check "b4b4r07/enhancd"; then
   export ENHANCD_DOT_SHOW_FULLPATH=1
 fi
 
-zplug "lib/completion",  from:oh-my-zsh
-zplug "lib/directories", from:oh-my-zsh
-zplug "lib/grep",        from:oh-my-zsh
-zplug "lib/history",     from:oh-my-zsh
-zplug "lib/termsupport", from:oh-my-zsh
+zplug "lib/completion",   from:oh-my-zsh
+zplug "lib/directories",  from:oh-my-zsh
+zplug "lib/grep",         from:oh-my-zsh
+zplug "lib/history",      from:oh-my-zsh
+zplug "lib/key-bindings", from:oh-my-zsh
+zplug "lib/termsupport",  from:oh-my-zsh
 
 zplug "plugins/asdf",    from:oh-my-zsh
 zplug "plugins/bundler", from:oh-my-zsh
