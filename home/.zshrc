@@ -9,6 +9,10 @@ source ~/.zplug/init.zsh
 zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
 zplug "junegunn/fzf-bin", from:gh-r, as:command, rename-to:fzf
+zplug "stedolan/jq",      from:gh-r, as:command, rename-to:jq
+zplug "akavel/up",        from:gh-r, as:command, rename-to:up
+zplug "sharkdp/bat",      from:gh-r, as:command, rename-to:bat
+
 zplug "b4b4r07/enhancd", use:init.sh
 if zplug check "b4b4r07/enhancd"; then
   export ENHANCD_FILTER="fzf --height 50% --reverse --ansi"
