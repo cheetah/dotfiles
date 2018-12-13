@@ -12,6 +12,7 @@ zplug "junegunn/fzf-bin", from:gh-r, as:command, rename-to:fzf
 zplug "stedolan/jq",      from:gh-r, as:command, rename-to:jq
 zplug "akavel/up",        from:gh-r, as:command, rename-to:up
 zplug "sharkdp/bat",      from:gh-r, as:command, rename-to:bat
+zplug "wagoodman/dive",   from:gh-r, as:command, rename-to:dive
 
 zplug "b4b4r07/enhancd", use:init.sh
 if zplug check "b4b4r07/enhancd"; then
