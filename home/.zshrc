@@ -37,8 +37,9 @@ zplug "plugins/asdf",    from:oh-my-zsh
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
-zplug "~/.zsh/cmd",    from:local, use:'(*).sh',          as:command, rename-to:'$1'
-zplug "~/.zsh/themes", from:local, use:cheetah.zsh-theme, as:theme
+zplug "~/.zsh/plugins", from:local
+zplug "~/.zsh/cmd",     from:local, use:'(*).sh',          as:command, rename-to:'$1'
+zplug "~/.zsh/themes",  from:local, use:cheetah.zsh-theme, as:theme
 
 if [[ $OSTYPE == *darwin* ]]; then
   zplug "plugins/osx",  from:oh-my-zsh
