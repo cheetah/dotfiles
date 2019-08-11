@@ -17,8 +17,8 @@ if [[ $lang ]]; then
       asdf plugin-update $lng
     fi
 
-    for version in $(asdf list-all $lng | sort -nrk1,1 | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[asdf:${lng}:install]'")
-    do asdf install $lng $version
+    for version in $(asdf list-all $lng | sort -nrk1,1 | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[asdf:${lng}:install]'"); do 
+      asdf install $lng $version
     done
   done
 fi
