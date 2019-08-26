@@ -1,6 +1,6 @@
 ### ASDF
-# uninstall multiple languages at once, async
 # mnemonic [V]ersion [M]anager [C]lean
+# uninstall multiple languages at once, async
 
 lang=${1}
 
