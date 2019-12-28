@@ -11,7 +11,7 @@ fi
 if [[ $lang ]]; then
   for lng in $(echo $lang); do
     for version in $(asdf list $lng | sort -nrk1,1 | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[asdf:${lng}:clean]'")
-    do asdf uninstall $lng $version
+      do asdf uninstall $lng $version
     done
   done
 fi

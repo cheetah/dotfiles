@@ -6,7 +6,7 @@ lang=${1}
 asdf plugin-list-all &>/dev/null 2>&1
 
 if [[ -z $lang ]]; then
-  lang=$(asdf plugin-list-all | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[asdf:install]'")
+  lang=$(asdf plugin-list all | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[asdf:install]'" | awk '{print $1}')
 fi
 
 if [[ $lang ]]; then
