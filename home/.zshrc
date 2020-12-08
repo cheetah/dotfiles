@@ -10,8 +10,10 @@ fi
 zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
 zplug "wagoodman/dive",     from:gh-r, as:command, rename-to:dive
+zplug "tbillington/kondo",  from:gh-r, as:command, rename-to:kondo
 zplug "stedolan/jq",        from:gh-r, as:command, rename-to:jq
 zplug "sharkdp/bat",        from:gh-r, as:command, rename-to:bat
+zplug "r-darwish/topgrade", from:gh-r, as:command, rename-to:topgrade
 zplug "junegunn/fzf-bin",   from:gh-r, as:command, rename-to:fzf
 zplug "genuinetools/reg",   from:gh-r, as:command, rename-to:reg
 zplug "BurntSushi/ripgrep", from:gh-r, as:command, rename-to:rg
