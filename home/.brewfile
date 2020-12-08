@@ -14,6 +14,7 @@ brew 'tmux'
 cask 'font-anonymous-pro'
 cask 'font-fira-code'
 cask 'font-iosevka'
+cask 'font-jetbrains-mono'
 
 cask 'qlcolorcode'
 cask 'qlcommonmark'
