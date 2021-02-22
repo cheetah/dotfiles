@@ -15,6 +15,7 @@ cask 'font-anonymous-pro'
 cask 'font-fira-code'
 cask 'font-iosevka'
 cask 'font-jetbrains-mono'
+cask 'font-victor-mono'
 
 cask 'qlcolorcode'
 cask 'qlcommonmark'
