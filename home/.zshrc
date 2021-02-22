@@ -10,7 +10,7 @@ fi
 zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
 zplug "wagoodman/dive",     from:gh-r, as:command, rename-to:dive
-zplug "tbillington/kondo",  from:gh-r, as:command, rename-to:kondo
+zplug "tbillington/kondo",  from:gh-r, as:command, rename-to:kondo, ignore:"*ui*"
 zplug "stedolan/jq",        from:gh-r, as:command, rename-to:jq
 zplug "sharkdp/bat",        from:gh-r, as:command, rename-to:bat
 zplug "r-darwish/topgrade", from:gh-r, as:command, rename-to:topgrade
