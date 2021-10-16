@@ -1,6 +1,6 @@
 ### ASDF
-# install multiple languages at once, async
 # mnemonic [V]ersion [M]anager [I]nstall
+# install multiple languages at once, async
 
 lang=${1}
 asdf plugin-list-all &>/dev/null 2>&1
