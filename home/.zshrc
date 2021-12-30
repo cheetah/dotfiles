@@ -43,8 +43,8 @@ zplug "~/.zsh/cmd",     from:local, use:'(*).sh',          as:command, rename-to
 zplug "~/.zsh/themes",  from:local, use:cheetah.zsh-theme, as:theme
 
 if [[ $OSTYPE == *darwin* ]]; then
-  zplug "plugins/osx",  from:oh-my-zsh
-  zplug "plugins/pass", from:oh-my-zsh
+  zplug "plugins/pass",  from:oh-my-zsh
+  zplug "plugins/macos", from:oh-my-zsh
 fi
 
 [ -s "$HOME/.zsh.local" ] && source $HOME/.zsh.local
