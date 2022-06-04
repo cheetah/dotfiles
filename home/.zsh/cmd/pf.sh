@@ -1,5 +1,5 @@
 ### PASS
-# mnemonic: [P]ass[F]ind
+# mnemonic: [P]ass [F]ind
 # search password in the passwotd store
 # press [enter] to copy selected password
 # press [escape] to exit
@@ -32,7 +32,6 @@ candidates=$(list_entries)
 
 res=$(candidate_selector "$query" "$candidates")
 if [ -n "$res" ]; then
-	pass show "$res" | tail -n +2 || exit $?
 	pass show -c "$res"
 else
 	exit 1
