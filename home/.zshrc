@@ -31,9 +31,9 @@ zplug "lib/grep",         from:oh-my-zsh
 zplug "lib/directories",  from:oh-my-zsh
 zplug "lib/completion",   from:oh-my-zsh
 
-zplug "plugins/git",     from:oh-my-zsh
-zplug "plugins/docker",  from:oh-my-zsh
-zplug "plugins/asdf",    from:oh-my-zsh
+zplug "plugins/git",      from:oh-my-zsh
+zplug "plugins/docker",   from:oh-my-zsh
+zplug "plugins/asdf",     from:oh-my-zsh
 
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
