@@ -5,10 +5,10 @@
 obbdir=${1}
 
 if [[ -z $obbdir ]]; then
-  obbdir=$(find . -maxdepth 5 -name '*.obb' ! -iname ".*" -exec dirname {} \; | sort -u | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[adb:push]'" | awk '{print $1}')
+  obbdir=$(find . -maxdepth 5 -name '*.obb' ! -iname ".*" -exec dirname {} \; | sort -u | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[adb:push]'")
 fi
 
 if [[ $obbdir ]]; then
   echo "Trying $obbdir"
-  adb push $obbdir /sdcard/Android/obb/
+  adb push "$obbdir" /sdcard/Android/obb/
 fi
