@@ -10,7 +10,7 @@ fi
 zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
 zplug "BurntSushi/ripgrep", from:gh-r, as:command, rename-to:rg
-zplug "junegunn/fzf-bin",   from:gh-r, as:command, rename-to:fzf
+zplug "junegunn/fzf",       from:gh-r, as:command, rename-to:fzf
 zplug "r-darwish/topgrade", from:gh-r, as:command, rename-to:topgrade
 zplug "sharkdp/bat",        from:gh-r, as:command, rename-to:bat
 zplug "stedolan/jq",        from:gh-r, as:command, rename-to:jq
